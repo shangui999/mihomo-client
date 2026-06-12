@@ -98,17 +98,13 @@ cat > /etc/sing-box/config.json <<JSONEOF
     {
       "type": "direct",
       "tag": "direct"
-    },
-    {
-      "type": "dns",
-      "tag": "dns-out"
     }
   ],
   "route": {
     "rules": [
       {
         "protocol": "dns",
-        "outbound": "dns-out"
+        "action": "hijack-dns"
       },
       {
         "rule_set": ["cn", "cnip"],

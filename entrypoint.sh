@@ -1,8 +1,7 @@
 #!/bin/sh
 set -e
 
-SOCKS_PORT="${HY2_SOCKS_PORT:-10808}"
-HTTP_PORT="${HY2_HTTP_PORT:-10809}"
+MIXED_PORT="${MIXED_PORT:-10808}"
 
 [ -z "$HY2_URI" ] && { echo "HY2_URI is required"; exit 1; }
 
@@ -50,7 +49,7 @@ fi
 
 # --- generate config ---
 cat > /etc/mihomo/config.yaml <<YAMLEOF
-mixed-port: 0
+mixed-port: ${MIXED_PORT}
 allow-lan: true
 mode: rule
 log-level: info

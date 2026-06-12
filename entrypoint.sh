@@ -48,7 +48,7 @@ if [ -n "$HY2_URI" ]; then
       alpn)          echo "    alpn: [${val}]" ;;
       fingerprint)   echo "    fingerprint: ${val}" ;;
     esac
-  done | awk '!seen[$0]++' > /tmp/hy2_opts
+  done | awk -F: '{key=$1} !seen[key]++ {print}' > /tmp/hy2_opts
 
   HY2_BLOCK="${HY2_BLOCK}
 $(cat /tmp/hy2_opts)"

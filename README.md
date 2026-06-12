@@ -5,11 +5,13 @@
 ## 特性
 
 - 单容器，mihomo 原生支持 Hysteria 2
+- 混合端口：一个端口同时支持 HTTP 和 SOCKS5
 - 内置分流规则：国内流量直连，其余走代理
 - DNS 分流 + fake-ip 模式，防 DNS 污染
 - 支持端口跳跃 (port hopping)
 - 构建时自动拉取最新 mihomo 版本
 - 内置 GeoIP/GeoSite 规则数据库
+- API 认证保护
 
 ## 快速开始 (docker-compose)
 
@@ -21,11 +23,8 @@ services:
     restart: always
     environment:
       - HY2_URI=hysteria2://YOUR_PASSWORD@YOUR_SERVER:PORT?sni=example.com&insecure=0&mport=50000-60000#my-proxy
-      - HY2_SOCKS_PORT=10808
-      - HY2_HTTP_PORT=10809
     ports:
-      - "10808:10808"   # SOCKS5
-      - "10809:10809"   # HTTP
+      - "10808:10808"   # 混合端口 (HTTP + SOCKS5)
       - "9090:9090"     # 管理面板 API
 ```
 
@@ -34,7 +33,7 @@ services:
 ```bash
 docker run -d --name mihomo-client --restart always \
   -e HY2_URI="hysteria2://password@server:port?sni=example.com&insecure=0" \
-  -p 10808:10808 -p 10809:10809 \
+  -p 10808:10808 -p 9090:9090 \
   ghcr.io/shangui999/mihomo-client:latest
 ```
 
@@ -43,8 +42,31 @@ docker run -d --name mihomo-client --restart always \
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `HY2_URI` | 是 | - | 完整的 hysteria2:// URI |
-| `HY2_SOCKS_PORT` | 否 | `10808` | SOCKS5 代理监听端口 |
-| `HY2_HTTP_PORT` | 否 | `10809` | HTTP 代理监听端口 |
+| `MIXED_PORT` | 否 | `10808` | 混合端口，同时支持 HTTP 和 SOCKS5 |
+| `MIHOMO_SECRET` | 否 | 随机 UUID | 管理面板 API 认证密钥 |
+
+## 使用方式
+
+### 作为 HTTP 代理
+
+```bash
+curl -x http://YOUR_HOST_IP:10808 https://www.google.com
+# 或
+export http_proxy=http://YOUR_HOST_IP:10808
+export https_proxy=http://YOUR_HOST_IP:10808
+```
+
+### 作为 SOCKS5 代理
+
+```bash
+curl -x socks5h://YOUR_HOST_IP:10808 https://www.google.com
+```
+
+### 在浏览器/系统中配置
+
+- 代理类型：SOCKS5 或 HTTP
+- 地址：`YOUR_HOST_IP`
+- 端口：`10808`
 
 ## 分流规则
 
@@ -82,14 +104,16 @@ docker run -d --name mihomo-client --restart always \
 
 ## 管理面板
 
-容器启动后可通过 `9090` 端口访问 Clash API：
+容器启动日志会打印 API Secret。通过 9090 端口访问面板：
 
-- Yacd: http://yacd.haishan.me/?hostname=192.168.1.200&port=9090
-- MetaCubeX Dashboard: http://d.metacubex.one/?hostname=192.168.1.200&port=9090
+- [Yacd](http://yacd.haishan.me/?hostname=YOUR_HOST_IP&port=9090)
+- [MetaCubeX Dashboard](http://d.metacubex.one/?hostname=YOUR_HOST_IP&port=9090)
+
+连接时需填入 Secret 认证。可通过环境变量 `MIHOMO_SECRET` 设置固定密钥。
 
 ## 升级 mihomo 版本
 
-修改代码后 push 到 main，GitHub Actions 自动构建最新镜像。
+代码 push 到 main 分支后，GitHub Actions 自动构建最新镜像。
 
 ## 许可证
 

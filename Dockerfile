@@ -1,9 +1,9 @@
 FROM alpine:latest
 
-ARG SINGBOX_VERSION=1.13.13
 ARG RULE_SET_REPO=https://github.com/DustinWin/ruleset_geodata/releases/latest/download
 
-RUN apk add --no-cache ca-certificates curl gcompat && \
+RUN apk add --no-cache ca-certificates curl jq gcompat && \
+    SINGBOX_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name' | sed 's/^v//') && \
     curl -fSL "https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz" \
       -o /tmp/sing-box.tar.gz && \
     tar -xzf /tmp/sing-box.tar.gz -C /tmp && \

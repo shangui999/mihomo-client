@@ -50,12 +50,14 @@ cat > /etc/sing-box/config.json <<JSONEOF
     "servers": [
       {
         "tag": "dns-remote",
-        "address": "8.8.8.8",
+        "type": "udp",
+        "server": "8.8.8.8",
         "detour": "hy2-proxy"
       },
       {
         "tag": "dns-local",
-        "address": "223.5.5.5",
+        "type": "udp",
+        "server": "223.5.5.5",
         "detour": "direct"
       }
     ],

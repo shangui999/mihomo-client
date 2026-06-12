@@ -70,33 +70,39 @@ cat > /etc/sing-box/config.json <<JSONEOF
   "route": {
     "rules": [
       {
-        "rule_set": ["cn-domains", "cn-ip"],
+        "rule_set": ["cn", "cnip"],
         "outbound": "direct"
       },
       {
-        "rule_set": ["private"],
+        "rule_set": ["private", "privateip"],
         "outbound": "direct"
       }
     ],
     "final": "hy2-proxy",
     "rule_set": [
       {
-        "tag": "cn-domains",
+        "tag": "cn",
         "type": "local",
         "format": "binary",
-        "path": "/etc/sing-box/rule-set/cn-domains.srs"
+        "path": "/etc/sing-box/rule-set/cn.srs"
       },
       {
-        "tag": "cn-ip",
+        "tag": "cnip",
         "type": "local",
         "format": "binary",
-        "path": "/etc/sing-box/rule-set/cn-ip.srs"
+        "path": "/etc/sing-box/rule-set/cnip.srs"
       },
       {
         "tag": "private",
         "type": "local",
         "format": "binary",
         "path": "/etc/sing-box/rule-set/private.srs"
+      },
+      {
+        "tag": "privateip",
+        "type": "local",
+        "format": "binary",
+        "path": "/etc/sing-box/rule-set/privateip.srs"
       }
     ]
   }

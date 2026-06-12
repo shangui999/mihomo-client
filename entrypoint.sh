@@ -136,14 +136,10 @@ if [ -n "$VLESS_URI" ]; then
     val="$(urldecode "$val")"
     case "$key" in
       flow)             echo "    flow: ${val}" ;;
-      sni|servername)   echo "    servername: \"${val}\"" ;;
-      fp)               echo "    client-fingerprint: ${val}" ;;
       alpn)             echo "    alpn: [${val}]" ;;
       encryption)       echo "    encryption: ${val}" ;;
       packet-encoding)  echo "    packet-encoding: ${val}" ;;
-      pbk)              echo "    pbk: ${val}" ;;
-      sid)              echo "    sid: ${val}" ;;
-      type|security|path|host) ;; # handled separately below
+      type|security|path|host|sni|servername|fp|pbk|sid) ;; # handled separately
     esac
   done > /tmp/vl_opts
 

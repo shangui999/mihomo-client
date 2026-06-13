@@ -266,9 +266,16 @@ dns:
 proxies:
 ${PROXY_BLOCKS}
 proxy-groups:
+  - name: AUTO
+    type: url-test
+    proxies:
+${PROXY_NAMES}    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+    tolerance: 50
   - name: PROXY
     type: select
     proxies:
+      - AUTO
 ${PROXY_NAMES}      - DIRECT
 
 rules:
